@@ -1,29 +1,44 @@
 package com.example.AsterixApi.controller;
 
 import com.example.AsterixApi.model.Character;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.AsterixApi.repository.CharacterRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/asterix/characters")
+@AllArgsConstructor
 public class CharacterController {
 
+    private final CharacterRepository characterRepository;
+
     @GetMapping
-    public List<Character> findCharacters(){
-        return List.of(
-                new Character("1", "Asterix", 35, "Krieger"),
-                new Character("2", "Obelix", 35, "Lieferant"),
-                new Character("3", "Miraculix", 60, "Druide"),
-                new Character("4", "Majestix", 60, "Häuptling"),
-                new Character("5", "Troubadix", 25, "Barden"),
-                new Character("6", "Gutemine", 35, "Häuptlingsfrau"),
-                new Character("7", "Idefix", 5, "Hund"),
-                new Character("8", "Geriatrix", 70, "Rentner"),
-                new Character("9", "Automatix", 35, "Schmied"),
-                new Character("10", "Grockelix", 35, "Fischer")
+    public List<Character> findAll(){
+        List<Character> list = characterRepository.findAll();
+        return list;
+    }
+
+    @PostMapping
+    public Character save(@RequestBody Character character) {
+        Character saved = characterRepository.save(character);
+        return saved;
+    }
+
+    @PutMapping("/{id}")
+    public Character updateCharacter(@PathVariable String id, @RequestBody Character characterNew) {
+        Character existingCharacter = characterRepository.findById(id).get();
+
+        Character updatedCharacter = new Character(
+                characterNew.id() != null ? characterNew.id() : existingCharacter.id(),
+                characterNew.name() != null ? characterNew.name() : existingCharacter.name(),
+                characterNew.age() != 0 ? characterNew.age() : existingCharacter.age(),
+                characterNew.profession() != null ? characterNew.profession() : existingCharacter.profession()
         );
+
+        characterRepository.save(updatedCharacter);
+
+        return updatedCharacter;
     }
 }
