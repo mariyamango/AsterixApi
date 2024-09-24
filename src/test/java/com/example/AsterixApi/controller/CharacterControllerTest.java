@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +29,7 @@ class CharacterControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private CharacterRepository repo;
 
     @Test
@@ -38,7 +39,7 @@ class CharacterControllerTest {
         Character characterOne = new Character("1", "First", 55, "Baker");
         Character characterTwo = new Character("2", "Second", 35, "Grass cutter");
 
-        when(repo.findAll()).thenReturn(List.of(characterOne, characterTwo));
+        repo.saveAll(List.of(characterOne, characterTwo));
 
         //WHEN
         mockMvc.perform(MockMvcRequestBuilders.get("/asterix/characters"))
@@ -63,21 +64,106 @@ class CharacterControllerTest {
 
     @Test
     @DirtiesContext
-    void getAllById() {
+    void getAllById() throws Exception {
+        //GIVEN
+        Character characterOne = new Character("1", "First", 55, "Baker");
+        Character characterTwo = new Character("2", "Second", 35, "Grass cutter");
+        String idToAsk = "1";
+
+        repo.saveAll(List.of(characterOne, characterTwo));
+
+        //WHEN
+        mockMvc.perform(MockMvcRequestBuilders.get("/asterix/characters/" + idToAsk))
+                //THEN
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                {
+                  "id": "1",
+                  "name": "First",
+                  "age": 55,
+                  "profession": "Baker"
+                }
+                
+                """));
     }
 
     @Test
     @DirtiesContext
-    void delete() {
+    void delete() throws Exception {
+        //GIVEN
+        Character characterOne = new Character("1", "First", 55, "Baker");
+        Character characterTwo = new Character("2", "Second", 35, "Grass cutter");
+        String idToAsk = "1";
+
+        repo.saveAll(List.of(characterOne, characterTwo));
+
+        //WHEN
+        mockMvc.perform(MockMvcRequestBuilders.delete("/asterix/characters/" + idToAsk))
+                //THEN
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     @DirtiesContext
-    void save() {
+    void save() throws Exception {
+        //GIVEN
+
+        //WHEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/asterix/characters")
+                        .contentType(
+                                MediaType.APPLICATION_JSON)
+                        .content("""
+                {
+                  "name": "First",
+                  "age": 55,
+                  "profession": "Baker"
+                }
+                
+                """)
+                )
+                //THEN
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                {
+                  "name": "First",
+                  "age": 55,
+                  "profession": "Baker"
+                }
+                
+                """));
     }
 
     @Test
     @DirtiesContext
-    void updateCharacter() {
+    void updateCharacter() throws Exception {
+        //GIVEN
+        String idToEdit = "1";
+        Character characterOne = new Character(idToEdit, "First", 55, "Baker");
+        Character characterTwo = new Character("2", "Second", 35, "Grass cutter");
+
+        repo.saveAll(List.of(characterOne, characterTwo));
+
+        //WHEN
+        mockMvc.perform(MockMvcRequestBuilders.put("/asterix/characters/" + idToEdit)
+                        .contentType(
+                                MediaType.APPLICATION_JSON)
+                        .content("""
+                {
+                  "name": "FirstEdited",
+                  "age": 55,
+                  "profession": "Software-developer"
+                }
+                """)
+                )
+                //THEN
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                {
+                  "name": "FirstEdited",
+                  "age": 55,
+                  "profession": "Software-developer"
+                }
+                
+                """));
     }
 }
