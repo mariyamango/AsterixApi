@@ -110,7 +110,7 @@ class CharacterControllerTest {
                 //THEN
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        assertFalse(characterRepository.existsById(idToDelete), "Character should be deleted from repository");
+        assertFalse(characterRepository.existsById(idToDelete));
 
         verify(characterRepository, times(1)).deleteById(idToDelete);
         verify(characterRepository, times(1)).existsById(idToDelete);
