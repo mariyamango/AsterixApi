@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import  com.example.AsterixApi.model.Character;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.Mockito.*;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ class CharacterServiceTest {
     }
     @Test
     void findById() {
-
         Character mockCharacter = new Character("3","Bob", 55, "Gallic warrior");
         when(characterRepository.findById("3")).thenReturn(Optional.of(mockCharacter));
 
