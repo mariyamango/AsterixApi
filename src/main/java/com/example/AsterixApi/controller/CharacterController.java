@@ -21,7 +21,7 @@ public class CharacterController {
 
     @GetMapping
     public List<Character> findAll(){
-        List<Character> list = characterRepository.findAll();
+        List<Character> list = characterService.findAll();
         return list;
     }
 
@@ -42,18 +42,7 @@ public class CharacterController {
     }
 
     @PutMapping("/{id}")
-    public Character updateCharacter(@PathVariable String id, @RequestBody Character characterNew) {
-        Character existingCharacter = characterRepository.findById(id).get();
-
-        Character updatedCharacter = new Character(
-                characterNew.id() != null ? characterNew.id() : existingCharacter.id(),
-                characterNew.name() != null ? characterNew.name() : existingCharacter.name(),
-                characterNew.age() != 0 ? characterNew.age() : existingCharacter.age(),
-                characterNew.profession() != null ? characterNew.profession() : existingCharacter.profession()
-        );
-
-        characterRepository.save(updatedCharacter);
-
-        return updatedCharacter;
+    public Character updateCharacter(@PathVariable String id, @RequestBody CreateCharacterRequest characterNew) {
+        return characterService.updateCharacter(id, characterNew);
     }
 }

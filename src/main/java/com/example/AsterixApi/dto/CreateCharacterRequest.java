@@ -13,5 +13,4 @@ public record CreateCharacterRequest(String name, int age, String profession) {
                 .profession(profession)
                 .build();
     }
-
 }
