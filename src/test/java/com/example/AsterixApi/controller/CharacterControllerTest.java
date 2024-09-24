@@ -59,25 +59,25 @@ class CharacterControllerTest {
                 ]
                 """));
     }
+
+
+    @Test
+    @DirtiesContext
+    void getAllById() {
+    }
+
+    @Test
+    @DirtiesContext
+    void delete() {
+    }
+
+    @Test
+    @DirtiesContext
+    void save() {
+    }
+
+    @Test
+    @DirtiesContext
+    void updateCharacter() {
+    }
 }
-
-
-//    @Test
-//    @DirtiesContext
-//    void getAllById() {
-//    }
-//
-//    @Test
-//    @DirtiesContext
-//    void delete() {
-//    }
-//
-//    @Test
-//    @DirtiesContext
-//    void save() {
-//    }
-//
-//    @Test
-//    @DirtiesContext
-//    void updateCharacter() {
-//    }
